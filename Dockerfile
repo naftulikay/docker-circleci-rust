@@ -8,8 +8,9 @@ ENV CIRCLECI_HOME=/home/${CIRCLECI_USER}
 # install epel
 RUN yum install -y epel-release >/dev/null && yum clean all
 
-# install python dev packages
-RUN yum install -y sudo unzip git openssl-devel kernel-devel which make gcc python-devel python34-devel python-pip && \
+# install devel packages
+RUN yum install -y sudo unzip git openssl-devel kernel-devel which make gcc python-devel python34-devel python-pip \
+    curl file autoconf automake cmake libtool libcurl-devel binutils-devel zlib-devel wget xz-devel pkgconfig && \
   yum clean all
 
 # install and upgrade pip and utils
@@ -18,6 +19,9 @@ RUN pip install --upgrade pip && pip install awscli ansible
 # create sudo group and add sudoers config
 COPY conf/sudoers.d/50-sudo /etc/sudoers.d/
 RUN groupadd sudo
+
+# add ldconfig for /usr/local
+RUN echo '/usr/local/lib' > /etc/ld.so.conf.d/local.conf
 
 # create the user
 RUN adduser -G sudo -m ${CIRCLECI_USER}
@@ -36,4 +40,5 @@ RUN ( cd /tmp/docker && ansible-galaxy install --force -r requirements-docker.ym
 
 USER ${CIRCLECI_USER}
 WORKDIR /home/${CIRCLECI_USER}/circleci
-ENTRYPOINT ["/bin/bash", "-l"]
+
+CMD ["/bin/bash", "-l"]
