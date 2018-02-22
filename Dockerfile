@@ -11,7 +11,7 @@ RUN yum install -y epel-release >/dev/null && yum clean all
 # install devel packages
 RUN yum install -y sudo unzip git openssl-devel kernel-devel which make gcc python-devel python34-devel python-pip \
     curl file autoconf automake cmake libtool libcurl-devel binutils-devel zlib-devel wget xz-devel pkgconfig \
-    bash-completion man-pages tree jq && \
+    bash-completion man-pages tree jq zip && \
   yum clean all
 
 # install and upgrade pip and utils
