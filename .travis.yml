@@ -1,0 +1,19 @@
+---
+dist: trusty
+
+matrix:
+  fast_finish: true
+
+services:
+  - docker
+
+install: true
+
+script:
+  - docker build naftulikay/circleci-rust .
+
+notifications:
+  email:
+    on_success: never
+    on_failure: never
+  webhooks: https://registry.hub.docker.com/u/naftulikay/circleci-rust/trigger/${DOCKERHUB_TOKEN}/
