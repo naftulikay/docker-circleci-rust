@@ -26,17 +26,17 @@ RUN echo '/usr/local/lib' > /etc/ld.so.conf.d/local.conf
 # create the user
 RUN adduser -G sudo -m ${CIRCLECI_USER}
 
-# deploy our tfenv command
-RUN install -o ${CIRCLECI_USER} -g ${CIRCLECI_USER} -m 0700 -d ${CIRCLECI_HOME}/.local/bin
-COPY bin/tfenv ${CIRCLECI_HOME}/.local/bin
-RUN chmod 0755 ${CIRCLECI_HOME}/.local/bin/tfenv && \
-  chown ${CIRCLECI_USER}:${CIRCLECI_USER} ${CIRCLECI_HOME}/.local/bin/tfenv
-
 # deploy our ansible
 RUN mkdir /tmp/docker
 COPY ansible.cfg docker.yml requirements-docker.yml /tmp/docker/
 RUN ( cd /tmp/docker && ansible-galaxy install --force -r requirements-docker.yml && \
   ansible-playbook -c local -i 127.0.0.1, -e circleci_user=${CIRCLECI_USER} docker.yml )
+
+# deploy our tfenv command
+RUN install -o ${CIRCLECI_USER} -g ${CIRCLECI_USER} -m 0700 -d ${CIRCLECI_HOME}/.local/bin
+COPY bin/tfenv ${CIRCLECI_HOME}/.local/bin
+RUN chmod 0755 ${CIRCLECI_HOME}/.local/bin/tfenv && \
+  chown ${CIRCLECI_USER}:${CIRCLECI_USER} ${CIRCLECI_HOME}/.local/bin/tfenv
 
 USER ${CIRCLECI_USER}
 WORKDIR /home/${CIRCLECI_USER}/circleci
