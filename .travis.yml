@@ -15,7 +15,7 @@ script:
 deploy:
   - provider: script
     script: |
-      curl -i -H "Content-Type: application/json" --data '{"build": true}' -X POST https://registry.hub.docker.com/u/naftulikay/circleci-rust/trigger/${DOCKERHUB_TOKEN}/
+      curl -isSL -H "Content-Type: application/json" --data '{"build": true}' -X POST https://registry.hub.docker.com/u/naftulikay/circleci-rust/trigger/${DOCKERHUB_TOKEN}/
     on:
       branch: master
 
