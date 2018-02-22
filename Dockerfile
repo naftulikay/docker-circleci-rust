@@ -10,7 +10,8 @@ RUN yum install -y epel-release >/dev/null && yum clean all
 
 # install devel packages
 RUN yum install -y sudo unzip git openssl-devel kernel-devel which make gcc python-devel python34-devel python-pip \
-    curl file autoconf automake cmake libtool libcurl-devel binutils-devel zlib-devel wget xz-devel pkgconfig && \
+    curl file autoconf automake cmake libtool libcurl-devel binutils-devel zlib-devel wget xz-devel pkgconfig \
+    bash-completion man-pages tree jq && \
   yum clean all
 
 # install and upgrade pip and utils
@@ -31,12 +32,16 @@ RUN mkdir /tmp/docker
 COPY ansible.cfg docker.yml requirements-docker.yml /tmp/docker/
 RUN ( cd /tmp/docker && ansible-galaxy install --force -r requirements-docker.yml && \
   ansible-playbook -c local -i 127.0.0.1, -e circleci_user=${CIRCLECI_USER} docker.yml )
+RUN rm -r /tmp/docker
 
 # deploy our tfenv command
-RUN install -o ${CIRCLECI_USER} -g ${CIRCLECI_USER} -m 0700 -d ${CIRCLECI_HOME}/.local/bin
+RUN install -o ${CIRCLECI_USER} -g ${CIRCLECI_USER} -m 0700 -d ${CIRCLECI_HOME}/.local ${CIRCLECI_HOME}/.local/bin
 COPY bin/tfenv ${CIRCLECI_HOME}/.local/bin
 RUN chmod 0755 ${CIRCLECI_HOME}/.local/bin/tfenv && \
   chown ${CIRCLECI_USER}:${CIRCLECI_USER} ${CIRCLECI_HOME}/.local/bin/tfenv
+
+# create circleci base dir
+RUN install -o ${CIRCLECI_USER} -g ${CIRCLECI_USER} -m 0700 -d ${CIRCLECI_HOME}/circleci
 
 USER ${CIRCLECI_USER}
 WORKDIR /home/${CIRCLECI_USER}/circleci
