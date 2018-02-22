@@ -10,7 +10,7 @@ services:
 install: true
 
 script:
-  - docker build naftulikay/circleci-rust .
+  - docker build -t naftulikay/circleci-rust .
 
 notifications:
   email:
