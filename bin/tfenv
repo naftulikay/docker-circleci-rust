@@ -1,0 +1,20 @@
+#!/usr/bin/bash
+
+function .usage() {
+  (
+    echo "$0 VERSION"
+    echo "Installs the given version of Terraform."
+  ) >&2
+  exit 1
+}
+
+function .main() {
+  if [ -z "$1" ]; then
+    .usage
+  fi
+}
+
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+  set -e
+  .main $@
+fi
